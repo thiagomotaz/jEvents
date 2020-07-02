@@ -19,15 +19,16 @@ class Usuario extends Model implements Authenticatable
         'senhaUsuario'
     ];
 
-  
-    public function todo()
+
+    public function eventos()
     {
-        return $this->hasMany('App\Evento','idUsuario');
+        return $this->hasMany('App\Evento', 'idUsuario_Responsavel')->orderBy('dataEvento', 'ASC');
+        //trocar pelo responsavel
     }
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-   
 }

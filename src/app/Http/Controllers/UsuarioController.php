@@ -35,16 +35,22 @@ class UsuarioController extends Controller
     public function authenticate(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required',
+            'acesso' => 'required',
             'senha' => 'required'
         ]);
-        $usuario = Usuario::where('emailUsuario', $request->input('email'))->first();
-        echo $usuario;
+        $acesso = request()->input('acesso');
+        $tipoAcesso = filter_var($acesso, FILTER_VALIDATE_EMAIL) ? 'email' : 'login';
+        
+        if ($tipoAcesso == 'email') { //verificação de tipo de acesso (login ou email)
+            $usuario = Usuario::where('emailUsuario', $request->input('acesso'))->first();
+        } else {
+            $usuario = Usuario::where('loginUsuario', $request->input('acesso'))->first();
+        }
 
         // if (Hash::check($request->input('senha'), $usuario->senhaUsuario)) {
         if ($request->input('senha') == $usuario->senhaUsuario) {
             $apikey = base64_encode(Str::random(40));
-            Usuario::where('emailUsuario', $request->input('email'))->update(['api_key' => "$apikey"]);;
+            Usuario::where(($tipoAcesso.'Usuario'), $request->input('acesso'))->update(['api_key' => "$apikey"]);;
             return response()->json(['status' => 'success', 'api_key' => $apikey]);
         } else {
             return response()->json(['status' => 'fail'], 401);

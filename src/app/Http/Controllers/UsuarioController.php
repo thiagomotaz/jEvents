@@ -28,8 +28,12 @@ class UsuarioController extends Controller
         // $usuario->senhaUsuario = Hash::make($request->senha);
         $usuario->senhaUsuario = $request->senha;
         $usuario->api_key = '';
-        $usuario->save();
-        return response()->json($usuario);
+        if($usuario->save()){
+            return response()->json(['status' => 'Conta criada com sucesso!']);
+        }
+        else{
+            return response()->json(['status' => 'Falha ao criar conta!']);
+        }
     }
 
     public function authenticate(Request $request)
@@ -51,7 +55,7 @@ class UsuarioController extends Controller
         if ($request->input('senha') == $usuario->senhaUsuario) {
             $apikey = base64_encode(Str::random(40));
             Usuario::where(($tipoAcesso.'Usuario'), $request->input('acesso'))->update(['api_key' => "$apikey"]);;
-            return response()->json(['status' => 'success', 'api_key' => $apikey]);
+            return response()->json(['status' => 'Login realizado com sucesso. Utilize a hash (api_key abaixo) gerada para ter acesso à funcionalides autenticadas da API.', 'api_key' => $apikey]);
         } else {
             return response()->json(['status' => 'fail'], 401);
         }

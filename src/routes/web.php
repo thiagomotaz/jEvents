@@ -21,7 +21,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     #http://localhost:8000/api/v1/usuarios
 
     $router->post('/usuarios', 'UsuarioController@create');
-    $router->get('/login', 'UsuarioController@authenticate');
+    $router->post('/login', 'UsuarioController@authenticate');
     $router->post('/eventos', 'EventoController@store');
     $router->get('/eventos', 'EventoController@index');
     $router->get('/eventos/{id}', 'EventoController@show');

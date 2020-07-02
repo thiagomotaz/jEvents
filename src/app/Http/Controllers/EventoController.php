@@ -25,11 +25,31 @@ class EventoController extends Controller
 
     public function index(Request $request)
     {
-        //pega os eventos do usuário autorizado(já ordenados por data)
-        $eventosLogado = Auth::user()->eventos()->get(); 
+
+        //pega os eventos do usuário autenticado, depois o resto deles(diferente do id do usuario autenticado), 
+        //aplica um dos filtros e faz merge nos arrays no final, mostrando os eventos do usuário no topo
         $idLogado =  Auth::user()['idUsuario'];
-        $eventos = Evento::where('idUsuario_Responsavel', '<>', $idLogado)->orderBy('dataEvento', 'ASC')->get(); //pega o resto dos eventos
-        return response()->json(['status' => 'success', 'result' => $eventosLogado, $eventos]);
+        $eventosLogado = null;
+        $eventos = null;
+        $descricao = $request->get('descricao');
+        if ($request->has('descricao')) {
+            $eventos = Evento::where('idUsuario_Responsavel', '<>', $idLogado)
+                ->where('descricaoEvento', 'LIKE', "%$descricao%")
+                ->orderBy('dataEvento', 'ASC')
+                ->get();
+            $eventosLogado = Auth::user()->eventos()->where('descricaoEvento', 'LIKE', "%$descricao%")->get();
+        } else if ($request->has('responsavel')) {
+            $eventos = Evento::where('idUsuario_Responsavel', '<>', $idLogado)
+                ->where('idUsuario_Responsavel', '=', $request->get('responsavel'))
+                ->orderBy('dataEvento', 'ASC')
+                ->get();
+            $eventosLogado = Auth::user()->eventos()->where('idUsuario_Responsavel', '=', $request->get('responsavel'))->get();
+        } else {
+            $eventos = Evento::where('idUsuario_Responsavel', '<>', $idLogado)->orderBy('dataEvento', 'ASC')->get();
+            $eventosLogado = Auth::user()->eventos()->get();
+        }
+        $merged = $eventosLogado->merge($eventos);
+        return response()->json($merged);
     }
 
     //Adiciona novo evento para usuários autenticados (Authorization)
@@ -53,17 +73,16 @@ class EventoController extends Controller
             $evento->idUsuario = $request->input('idUsuario');
             $evento->idUsuario_Responsavel = $request->input('idUsuario_Responsavel');
             $evento->save();
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => 'Evento cadastrado com sucesso!']);
         } else {
-            return response()->json(['status' => 'fail']);
+            return response()->json(['status' => 'Falha ao cadastrar evento!']);
         }
     }
 
     //consulta de eventos de um usuário
     public function show($id)
-     {
+    {
         $eventos = Evento::all()->where('idUsuario_Responsavel', '=', $id);
         return response()->json($eventos);
-     }
-
+    }
 }

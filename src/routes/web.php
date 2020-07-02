@@ -26,4 +26,8 @@ $router->group(['prefix'=>'api/v1'], function() use($router){
     $router->put('/usuarios/{id}', 'UsuarioController@update');
     $router->delete('/usuarios/{id}', 'UsuarioController@destroy');
 
+    $router->get('/login','UsuarioController@authenticate');
+    $router->get('/evento', 'EventoController@index');
+
+
 });

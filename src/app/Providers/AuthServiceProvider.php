@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\User;
+use App\Usuario;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,9 +30,17 @@ class AuthServiceProvider extends ServiceProvider
         // should return either a User instance or null. You're free to obtain
         // the User instance via an API token or any other method necessary.
 
+
+        //check that the user have a valid API key and then append the verified userid to the request.
         $this->app['auth']->viaRequest('api', function ($request) {
-            if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
+            if ($request->header('Authorization')) {
+                $key = explode(' ', $request->header('Authorization'));
+                // echo $key[0];
+                $user = Usuario::where('api_key', $key[0])->first();
+                if (!empty($user)) {
+                    $request->request->add(['userid' => $user->id]);
+                }
+                return $user;
             }
         });
     }

@@ -1,6 +1,10 @@
 php artisan make:seeder UsuarioSeeder
 php artisan db:seed
+php artisan db:seed --class=UsuarioSeeder
 
 
 php artisan make:migration create_usuario_table
 php artisan migrate
+
+
+php -S localhost:8000 -t public

@@ -16,3 +16,14 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->group(['prefix'=>'api/v1'], function() use($router){
+    #http://localhost:8000/api/v1/usuarios
+
+    $router->get('/usuarios', 'UsuarioController@index');
+    $router->post('/usuarios', 'UsuarioController@create');
+    $router->get('/usuarios/{id}', 'UsuarioController@show');
+    $router->put('/usuarios/{id}', 'UsuarioController@update');
+    $router->delete('/usuarios/{id}', 'UsuarioController@destroy');
+
+});

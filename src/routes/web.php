@@ -24,10 +24,10 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->get('/login', 'UsuarioController@authenticate');
     $router->post('/eventos', 'EventoController@store');
     $router->get('/eventos', 'EventoController@index');
+    $router->get('/eventos/{id}', 'EventoController@show');
 
 
     // $router->get('/usuarios', 'UsuarioController@index');
-    // $router->get('/usuarios/{id}', 'UsuarioController@show');
     // $router->put('/usuarios/{id}', 'UsuarioController@update');
     // $router->delete('/usuarios/{id}', 'UsuarioController@destroy');
 });

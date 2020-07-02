@@ -23,10 +23,9 @@ class EventoController extends Controller
         $this->middleware('auth');
     }
 
-    //Lista eventos para usuário autenticado (ordem cronológica / responsável)
     public function index(Request $request)
     {
-        //pega os eventos do usuário logado(jáordenados por data)
+        //pega os eventos do usuário autorizado(já ordenados por data)
         $eventosLogado = Auth::user()->eventos()->get(); 
         $idLogado =  Auth::user()['idUsuario'];
         $eventos = Evento::where('idUsuario_Responsavel', '<>', $idLogado)->orderBy('dataEvento', 'ASC')->get(); //pega o resto dos eventos
@@ -59,6 +58,13 @@ class EventoController extends Controller
             return response()->json(['status' => 'fail']);
         }
     }
+
+    //consulta de eventos de um usuário
+    public function show($id)
+     {
+        $eventos = Evento::all()->where('idUsuario_Responsavel', '=', $id);
+        return response()->json($eventos);
+     }
 
 
     //  public function index()

@@ -20,7 +20,7 @@ class EventoController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => 'show']); //ativa o auth com restrição de rota
     }
 
     public function index(Request $request)
@@ -66,10 +66,4 @@ class EventoController extends Controller
         return response()->json($eventos);
      }
 
-
-    //  public function index()
-    // {
-    //     $usuario = Usuario::all();
-    //     return response()->json($usuario);
-    // }
 }

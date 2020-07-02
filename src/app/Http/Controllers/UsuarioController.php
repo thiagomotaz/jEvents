@@ -40,7 +40,7 @@ class UsuarioController extends Controller
         ]);
         $acesso = request()->input('acesso');
         $tipoAcesso = filter_var($acesso, FILTER_VALIDATE_EMAIL) ? 'email' : 'login';
-        
+
         if ($tipoAcesso == 'email') { //verificação de tipo de acesso (login ou email)
             $usuario = Usuario::where('emailUsuario', $request->input('acesso'))->first();
         } else {
@@ -56,35 +56,4 @@ class UsuarioController extends Controller
             return response()->json(['status' => 'fail'], 401);
         }
     }
-
-    // public function show($id)
-    // {
-    //     $usuario = Usuario::find($id);
-    //     return response()->json($usuario);
-    // }
-
-    // public function update(Request $request, $id)
-    // {
-    //     $usuario = Usuario::find($id);
-
-    //     $usuario->nomeUsuario = $request->input('nome');
-    //     $usuario->emailUsuario = $request->input('email');
-    //     $usuario->loginUsuario = $request->input('login');
-    //     $usuario->senhaUsuario = $request->input('senha');
-    //     $usuario->save();
-    //     return response()->json($usuario);
-    // }
-
-    // public function destroy($id)
-    // {
-    //     $usuario = Usuario::find($id);
-    //     $usuario->delete();
-    //     return response()->json('usuario removido com sucesso');
-    // }
-
-    // public function index()
-    // {
-    //     $usuario = Usuario::all();
-    //     return response()->json($usuario);
-    // }
 }
